@@ -23,10 +23,13 @@ def earth_pressures(
         log (bool, optional): Print log. Defaults to False.
 
     Returns:
-        float: Bearing resistance, R.
+        tuple: A tuple containing four earth pressure coefficients (Kn, Kq, Kc, Kg):
+            - Kn: Normal earth pressure coefficient
+            - Kq: Surcharge earth pressure coefficient
+            - Kc: Cohesion earth pressure coefficient
+            - Kg: Weight earth pressure coefficient
     """
     # Check inputs
-    if friction < 0 or friction > 90: raise ValueError("Friction angle must be between 0 and 90 degrees.")
     if cohesion < 0: raise ValueError("Cohesion must be non-negative.")
     if delta < 0 or delta > 90: raise ValueError("Wall-soil friction angle must be between 0 and 90 degrees.")
     if beta < -90 or beta > 90: raise ValueError("Slope must be between -90 and 90 degrees.")
@@ -71,21 +74,20 @@ def earth_pressures(
     # Log
     if log:
         print("Input parameters:")
-        print("phi =", friction, 'deg')
-        print("c =", _c, 'kPa')
-        print("a =", _a, 'kPa')
-        print("delta =", delta, 'deg')
-        print("beta =", beta, 'deg')
-        print("theta =", theta, 'deg')
-        print("q =", _q, 'kPa')
-        print("p =", _p, 'kPa')
+        print(f"phi = {friction:.4g} deg")
+        print(f"c = {_c:.4g} kPa")
+        print(f"a = {_a:.4g} kPa")
+        print(f"delta = {delta:.4g} deg")
+        print(f"beta = {beta:.4g} deg")
+        print(f"theta = {theta:.4g} deg")
+        print(f"p = {_p:.4g} kPa")
         print("\nBoundary conditions:")
-        print("mw =", np.rad2deg(_mw), 'deg')
-        print("v =", np.rad2deg(_v), 'deg')
-        print("mt =", np.rad2deg(_mt), 'deg')
+        print(f"mw = {np.rad2deg(_mw):.4g} deg")
+        print(f"v = {np.rad2deg(_v):.4g} deg")
+        print(f"mt = {np.rad2deg(_mt):.4g} deg")
         print("\nCoefficients:")
-        print("Kn =", _Kn)
-        print("Kq =", _Kq) 
-        print("Kc =", _Kc)
-        print("Kg =", _Kg)
+        print(f"Kn = {_Kn:.4g}")
+        print(f"Kq = {_Kq:.4g}")
+        print(f"Kc = {_Kc:.4g}")
+        print(f"Kg = {_Kg:.4g}")
     return (_Kn,_Kq,_Kc,_Kg)

@@ -41,10 +41,6 @@ def bearing_resistance(
     if friction < 0: raise ValueError  ("Friction angle must be non-negative.")
     if cohesion < 0: raise ValueError("Cohesion must be non-negative.")
     if vertical is not None and vertical < 0: raise ValueError("Vertical load must be positive.")
-    if horizontal < 0: raise ValueError("Horizontal load must be non-negative.")
-    if longitudinal_force < 0: raise ValueError("Longitudinal force must be non-negative.")
-    if moment < 0: raise ValueError("Moment must be non-negative.")
-    if longitudinal_moment < 0: raise ValueError("Longitudinal moment must be non-negative.")
     if surcharge < 0: raise ValueError("Surcharge must be non-negative.")
     # Geometry
     _B = width
@@ -57,11 +53,11 @@ def bearing_resistance(
     _c = cohesion
     # Load
     _V = vertical
-    _HB = horizontal
-    _HL = longitudinal_force
+    _HB = np.abs(horizontal)
+    _HL = np.abs(longitudinal_force)
     _H = 0 if _V==None else np.sqrt(_HB**2 + _HL**2)
-    _MB = moment
-    _ML = longitudinal_moment
+    _MB = np.abs(moment)
+    _ML = np.abs(longitudinal_moment)
     # Surcharge
     _q = surcharge + _gamma*_D
     # Effective Dimensions
@@ -97,7 +93,7 @@ def bearing_resistance(
         _ig = 1
         _ic = 1
     else:
-        _mB = (2 + _Be/_Le)/(1 + _Be/_Le)
+        _mB = 2 if _Le==0 else (2 + _Be/_Le)/(1 + _Be/_Le)
         _mL = (2 + _Le/_Be)/(1 + _Le/_Be)
         _theta = 0 if np.max(_H)==0 else np.arctan2(_HB,_HL)
         _m = _mL * np.cos(_theta)**2 + _mB * np.sin(_theta)**2
@@ -110,45 +106,45 @@ def bearing_resistance(
     # Log
     if log:
         print('Geometry:')
-        print('B =', _B, 'm')
-        print('L =', _L, 'm')
-        print('D =', _D, 'm')
-        print('a =', inclination, 'deg')
+        print('B =', f'{_B:.4g}', 'm')
+        print('L =', f'{_L:.4g}', 'm')
+        print('D =', f'{_D:.4g}', 'm')
+        print('a =', f'{inclination:.4g}', 'deg')
         print('\nSoil Properties:')
-        print('gamma =', _gamma, 'kN/m3')
-        print('phi =', friction, 'deg')
-        print('c =', _c, 'kPa')
+        print('gamma =', f'{_gamma:.4g}', 'kN/m3')
+        print('phi =', f'{friction:.4g}', 'deg')
+        print('c =', f'{_c:.4g}', 'kPa')
         print('\nLoading:')
-        print('V =', _V, 'kN')
-        print('HB =', _HB, 'kN')
-        print('HL =', _HL, 'kN')
-        print('H =', _H, 'kN')
-        print('MB =', _MB, 'kNm')
-        print('ML =', _ML, 'kNm')
-        print('q =', _q, 'kPa')
+        print('V =', f'{_V:.4g}', 'kN')
+        print('HB =', f'{_HB:.4g}', 'kN')
+        print('HL =', f'{_HL:.4g}', 'kN')
+        print('H =', f'{_H:.4g}', 'kN')
+        print('MB =', f'{_MB:.4g}', 'kNm')
+        print('ML =', f'{_ML:.4g}', 'kNm')
+        print('q =', f'{_q:.4g}', 'kPa')
         print('\nEffective Dimensions:')
-        print('eB =', _eB, 'm')
-        print('eL =', _eL, 'm')
-        print('Be =', _Be, 'm')
-        print('Le =', _Le, 'm')
-        print('Ae =', _Ae, 'm2')
+        print('eB =', f'{_eB:.4g}', 'm')
+        print('eL =', f'{_eL:.4g}', 'm')
+        print('Be =', f'{_Be:.4g}', 'm')
+        print('Le =', f'{_Le:.4g}', 'm')
+        print('Ae =', f'{_Ae:.4g}', 'm2')
         print('\nBearing Capacity Factors:')
-        print('Nq =', _Nq)
-        print('Nc =', _Nc)
-        print('Ng =', _Ng)
+        print('Nq =', f'{_Nq:.4g}')
+        print('Nc =', f'{_Nc:.4g}')
+        print('Ng =', f'{_Ng:.4g}')
         print('\nInclination Factors:')
-        print('bq =', _bq)
-        print('bc =', _bc)
-        print('bg =', _bg)
+        print('bq =', f'{_bq:.4g}')
+        print('bc =', f'{_bc:.4g}')
+        print('bg =', f'{_bg:.4g}')
         print('\nShape Factors:')
-        print('sq =', _sq)
-        print('sc =', _sc)
-        print('sg =', _sg)
+        print('sq =', f'{_sq:.4g}')
+        print('sc =', f'{_sc:.4g}')
+        print('sg =', f'{_sg:.4g}')
         print('\nLoad Inclination Factors:')
-        print('iq =', _iq)
-        print('ic =', _ic)
-        print('ig =', _ig)
+        print('iq =', f'{_iq:.4g}')
+        print('ic =', f'{_ic:.4g}')
+        print('ig =', f'{_ig:.4g}')
         print('\nResults:')
-        print('qu =', _qu, 'kPa')
-        print('R =', _R, 'kN')
+        print('qu =', f'{_qu:.4g}', 'kPa')
+        print('R =', f'{_R:.4g}', 'kN')
     return _R
